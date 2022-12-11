@@ -4,6 +4,8 @@
 
 Context-aware smart indent object to select block, powered by [treesitter](https://github.com/nvim-treesitter/nvim-treesitter).
 
+<img src="https://user-images.githubusercontent.com/12980409/206920869-0a9075e2-7688-4c54-a442-331239a61de2.gif" width="100%"/>
+
 This plugin is intended to be used with [indent-blankline.nvim](https://github.com/lukas-reineke/indent-blankline.nvim),
 so you see the scope before you select.
 
