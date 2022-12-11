@@ -1,8 +1,10 @@
 # Treesitter-indent-object.nvim
 
+`vai` to select current context!
+
 Context-aware smart indent object to select block, powered by [treesitter](https://github.com/nvim-treesitter/nvim-treesitter).
 
-This plugin is intended to use with [indent-blankline.nvim](https://github.com/lukas-reineke/indent-blankline.nvim),
+This plugin is intended to be used with [indent-blankline.nvim](https://github.com/lukas-reineke/indent-blankline.nvim),
 so you see the scope before you select.
 
 ## Install
