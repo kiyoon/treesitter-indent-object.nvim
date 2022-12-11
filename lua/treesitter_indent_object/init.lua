@@ -1,5 +1,4 @@
-local folderOfThisFile = (...):match("(.-)[^%.]+$")
-local utils = require(folderOfThisFile .. ".utils")
+local utils = require("treesitter_indent_object.utils")
 local M = {}
 
 M.setup = function(options)
@@ -9,7 +8,9 @@ M.setup = function(options)
 
     local o = utils.first_not_nil
 
-    vim.g.indent_blankline_context_patterns = o(options.context_patterns, vim.g.treesitter_indent_object_context_patterns, vim.g.indent_blankline_context_patterns, {
+    vim.g.treesitter_indent_object_strict_tabs = o(options.strict_tabs, vim.g.indent_blankline_strict_tabs, vim.g.indent_blankline_strict_tabs, false)
+
+    vim.g.treesitter_indent_object_context_patterns = o(options.context_patterns, vim.g.treesitter_indent_object_context_patterns, vim.g.indent_blankline_context_patterns, {
         "class",
         "^func",
         "method",

@@ -60,14 +60,12 @@ Here are some examples.
 ```vim
 " vai to select context-aware indent
 xmap ai <Cmd>lua require'treesitter_indent_object.textobj'.select_indent_outer()<CR>
-" select inner block (only if block, only else block, etc.)
+" vaI to ensure selecting entire line (or just use Vai)
+xmap aI <Cmd>lua require'treesitter_indent_object.textobj'.select_indent_outer(true)<CR>
+" vii to select inner block (only if block, only else block, etc.)
 xmap ii <Cmd>lua require'treesitter_indent_object.textobj'.select_indent_inner()<CR>
-" select entire inner range (including if, else, etc.)
+" viI to select entire inner range (including if, else, etc.)
 xmap iI <Cmd>lua require'treesitter_indent_object.textobj'.select_indent_inner(true)<CR>
-
-" optional
-" vaI to ensure select entire line (or just use Vai)
-xnoremap aI <Cmd>lua require'treesitter_indent_object.textobj'.select_indent_outer()<CR>o^og
 ```
 
 Lua equivalent:  
@@ -75,6 +73,8 @@ Lua equivalent:
 ```lua
 -- select context-aware indent
 vim.keymap.set("x", "ai", "<Cmd>lua require'treesitter_indent_object.textobj'.select_indent_outer()<CR>")
+-- ensure selecting entire line (or just use Vai)
+vim.keymap.set("x", "aI", "<Cmd>lua require'treesitter_indent_object.textobj'.select_indent_outer(true)<CR>")
 -- select inner block (only if block, only else block, etc.)
 vim.keymap.set("x", "ii", "<Cmd>lua require'treesitter_indent_object.textobj'.select_indent_inner()<CR>")
 -- select entire inner range (including if, else, etc.)
