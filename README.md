@@ -62,24 +62,28 @@ Here are some examples.
 ```vim
 " vai to select context-aware indent
 xmap ai <Cmd>lua require'treesitter_indent_object.textobj'.select_indent_outer()<CR>
+omap ai <Cmd>lua require'treesitter_indent_object.textobj'.select_indent_outer()<CR>
 " vaI to ensure selecting entire line (or just use Vai)
 xmap aI <Cmd>lua require'treesitter_indent_object.textobj'.select_indent_outer(true)<CR>
+omap aI <Cmd>lua require'treesitter_indent_object.textobj'.select_indent_outer(true)<CR>
 " vii to select inner block (only if block, only else block, etc.)
 xmap ii <Cmd>lua require'treesitter_indent_object.textobj'.select_indent_inner()<CR>
+omap ii <Cmd>lua require'treesitter_indent_object.textobj'.select_indent_inner()<CR>
 " viI to select entire inner range (including if, else, etc.)
 xmap iI <Cmd>lua require'treesitter_indent_object.textobj'.select_indent_inner(true)<CR>
+omap iI <Cmd>lua require'treesitter_indent_object.textobj'.select_indent_inner(true)<CR>
 ```
 
 Lua equivalent:  
 
 ```lua
 -- select context-aware indent
-vim.keymap.set("x", "ai", "<Cmd>lua require'treesitter_indent_object.textobj'.select_indent_outer()<CR>")
+vim.keymap.set({"x", "o"}, "ai", "<Cmd>lua require'treesitter_indent_object.textobj'.select_indent_outer()<CR>")
 -- ensure selecting entire line (or just use Vai)
-vim.keymap.set("x", "aI", "<Cmd>lua require'treesitter_indent_object.textobj'.select_indent_outer(true)<CR>")
+vim.keymap.set({"x", "o"}, "aI", "<Cmd>lua require'treesitter_indent_object.textobj'.select_indent_outer(true)<CR>")
 -- select inner block (only if block, only else block, etc.)
-vim.keymap.set("x", "ii", "<Cmd>lua require'treesitter_indent_object.textobj'.select_indent_inner()<CR>")
+vim.keymap.set({"x", "o"}, "ii", "<Cmd>lua require'treesitter_indent_object.textobj'.select_indent_inner()<CR>")
 -- select entire inner range (including if, else, etc.)
-vim.keymap.set("x", "iI", "<Cmd>lua require'treesitter_indent_object.textobj'.select_indent_inner(true)<CR>")
+vim.keymap.set({"x", "o"}, "iI", "<Cmd>lua require'treesitter_indent_object.textobj'.select_indent_inner(true)<CR>")
 ```
 

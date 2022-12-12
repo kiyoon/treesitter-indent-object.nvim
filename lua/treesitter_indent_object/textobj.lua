@@ -12,6 +12,19 @@ local ts_indent_status, ts_indent = pcall(require, "nvim-treesitter.indent")
 
 local M = {}
 
+
+local enter_visual_mode = function()
+  -- enter visual mode if normal or operator-pending (no) mode
+  -- Why? According to https://learnvimscriptthehardway.stevelosh.com/chapters/15.html
+  --   If your operator-pending mapping ends with some text visually selected, Vim will operate on that text.
+  --   Otherwise, Vim will operate on the text between the original cursor position and the new position.
+  local mode = vim.api.nvim_get_mode()
+  --print(mode.mode, mode.blocking)
+  if mode.mode == 'no' or mode.mode == 'n' then
+    vim.cmd("normal! v")
+  end
+end
+
 -- Assume it is already visual mode
 local update_selection = function (node, entire_line)
   local start_row, start_col, end_row, end_col = ts_utils.get_vim_range( {node:range()} )
@@ -33,6 +46,7 @@ M.select_indent_outer = function(entire_line)
     utils.get_current_context(vim.g.treesitter_indent_object_context_patterns, vim.g.treesitter_indent_object_use_treesitter_scope)
   if not context_status then return false end
 
+  enter_visual_mode()
   update_selection(context_node, entire_line)
 end
 
@@ -177,6 +191,8 @@ M.select_indent_inner = function(select_all)
     --   end
     -- end
   end
+
+  enter_visual_mode()
   vim.api.nvim_win_set_cursor(0, {indented_row_start, 0})
   vim.cmd("normal! ^o")
   vim.api.nvim_win_set_cursor(0, {indented_row_end, 0})
