@@ -22,7 +22,7 @@ Use your favourite plugin manager to install.
 require("packer").startup(function()
   use "nvim-treesitter/nvim-treesitter"
   use "lukas-reineke/indent-blankline.nvim"  -- optional
-  use "treesitter-indent-object-nvim"
+  use "kiyoon/treesitter-indent-object.nvim"
 end)
 ```
 
