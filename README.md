@@ -15,7 +15,7 @@ Use your favourite plugin manager to install.
 
 #### Example with lazy.nvim
 
-This includes lazy-loading on keymaps. You can ignore every instruction below.
+This includes lazy-loading on keymaps. If you install like this, you can ignore every instruction below.
 ```lua
   {
     "kiyoon/treesitter-indent-object.nvim",
@@ -50,6 +50,10 @@ This includes lazy-loading on keymaps. You can ignore every instruction below.
     },
   },
 ```
+
+<details>
+  <summary>Click to see instructions for packer and vim-plug</summary>
+  
 #### Example with Packer
 
 [wbthomason/packer.nvim](https://github.com/wbthomason/packer.nvim)
@@ -124,3 +128,4 @@ vim.keymap.set({"x", "o"}, "ii", "<Cmd>lua require'treesitter_indent_object.text
 vim.keymap.set({"x", "o"}, "iI", "<Cmd>lua require'treesitter_indent_object.textobj'.select_indent_inner(true)<CR>")
 ```
 
+  </details>
