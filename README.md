@@ -19,9 +19,6 @@ This includes lazy-loading on keymaps. If you install like this, you can ignore 
 ```lua
   {
     "kiyoon/treesitter-indent-object.nvim",
-    config = function()
-      require("treesitter_indent_object").setup()
-    end,
     keys = {
       {
         "ai",
