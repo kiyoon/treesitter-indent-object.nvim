@@ -13,15 +13,28 @@ local ts_indent_status, ts_indent = pcall(require, "nvim-treesitter.indent")
 local M = {}
 
 
-local enter_visual_mode = function()
+local enter_visual_mode = function(force_mode)
   -- enter visual mode if normal or operator-pending (no) mode
   -- Why? According to https://learnvimscriptthehardway.stevelosh.com/chapters/15.html
   --   If your operator-pending mapping ends with some text visually selected, Vim will operate on that text.
   --   Otherwise, Vim will operate on the text between the original cursor position and the new position.
   local mode = vim.api.nvim_get_mode()
-  --print(mode.mode, mode.blocking)
-  if mode.mode == 'no' or mode.mode == 'n' then
-    vim.cmd("normal! v")
+
+  -- If set to 'V', try to force line-wise visual mode
+  if force_mode == 'V' then
+    if mode.mode == 'no' or mode.mode == 'n' or mode.mode == 'v' then
+      vim.cmd("normal! V")
+    end
+  -- If set to 'v', try to force char-wise visual mode
+  elseif force_mode == 'v' then
+    if mode.mode == 'no' or mode.mode == 'n' or mode.mode == 'V' then
+      vim.cmd("normal! v")
+    end
+  -- If not specified, respect the current visual mode
+  else
+    if mode.mode == 'no' or mode.mode == 'n' then
+      vim.cmd("normal! v")
+    end
   end
 end
 
@@ -39,18 +52,18 @@ local update_selection = function (node, entire_line)
   end
 end
 
-M.select_indent_outer = function(entire_line)
+M.select_indent_outer = function(entire_line, force_mode)
   entire_line = entire_line or false
   -- We have to remember that end_col is end-exclusive
   local context_status, context_node, context_pattern =
     utils.get_current_context(vim.g.treesitter_indent_object_context_patterns, vim.g.treesitter_indent_object_use_treesitter_scope)
   if not context_status then return false end
 
-  enter_visual_mode()
+  enter_visual_mode(force_mode)
   update_selection(context_node, entire_line)
 end
 
-M.select_indent_inner = function(select_all)
+M.select_indent_inner = function(select_all, force_mode)
   select_all = select_all or false
   local use_ts_indent = ts_query_status and ts_indent_status and ts_query.has_indents(vim.bo.filetype)
   local indent_fn = nil
@@ -192,7 +205,7 @@ M.select_indent_inner = function(select_all)
     -- end
   end
 
-  enter_visual_mode()
+  enter_visual_mode(force_mode)
   vim.api.nvim_win_set_cursor(0, {indented_row_start, 0})
   vim.cmd("normal! ^o")
   vim.api.nvim_win_set_cursor(0, {indented_row_end, 0})
