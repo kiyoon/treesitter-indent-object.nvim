@@ -22,27 +22,27 @@ This includes lazy-loading on keymaps. If you install like this, you can ignore 
     keys = {
       {
         "ai",
-        "<Cmd>lua require'treesitter_indent_object.textobj'.select_indent_outer()<CR>",
+        function() require'treesitter_indent_object.textobj'.select_indent_outer() end,
         mode = {"x", "o"},
         desc = "Select context-aware indent (outer)",
       },
       {
         "aI",
-        "<Cmd>lua require'treesitter_indent_object.textobj'.select_indent_outer(true)<CR>",
+        function() require'treesitter_indent_object.textobj'.select_indent_outer(true) end,
         mode = {"x", "o"},
         desc = "Select context-aware indent (outer, line-wise)",
       },
       {
         "ii",
-        "<Cmd>lua require'treesitter_indent_object.textobj'.select_indent_inner()<CR>",
+        function() require'treesitter_indent_object.textobj'.select_indent_inner() end,
         mode = {"x", "o"},
         desc = "Select context-aware indent (inner, partial range)",
       },
       {
         "iI",
-        "<Cmd>lua require'treesitter_indent_object.textobj'.select_indent_inner(true)<CR>",
+        function() require'treesitter_indent_object.textobj'.select_indent_inner(true, 'V') end,
         mode = {"x", "o"},
-        desc = "Select context-aware indent (inner, entire range)",
+        desc = "Select context-aware indent (inner, entire range) in line-wise visual mode",
       },
     },
   },
@@ -50,7 +50,7 @@ This includes lazy-loading on keymaps. If you install like this, you can ignore 
 
 <details>
   <summary>Click to see instructions for packer and vim-plug</summary>
-  
+
 #### Example with Packer
 
 [wbthomason/packer.nvim](https://github.com/wbthomason/packer.nvim)
@@ -94,7 +94,7 @@ require("indent_blankline").setup {
 require("treesitter_indent_object").setup()
 ```
 
-Key bindings are not configured by default.  
+Key bindings are not configured by default.
 Here are some examples.
 
 ```vim
@@ -107,22 +107,22 @@ omap aI <Cmd>lua require'treesitter_indent_object.textobj'.select_indent_outer(t
 " vii to select inner block (only if block, only else block, etc.)
 xmap ii <Cmd>lua require'treesitter_indent_object.textobj'.select_indent_inner()<CR>
 omap ii <Cmd>lua require'treesitter_indent_object.textobj'.select_indent_inner()<CR>
-" viI to select entire inner range (including if, else, etc.)
-xmap iI <Cmd>lua require'treesitter_indent_object.textobj'.select_indent_inner(true)<CR>
-omap iI <Cmd>lua require'treesitter_indent_object.textobj'.select_indent_inner(true)<CR>
+" viI to select entire inner range (including if, else, etc.) in line-wise visual mode
+xmap iI <Cmd>lua require'treesitter_indent_object.textobj'.select_indent_inner(true, 'V')<CR>
+omap iI <Cmd>lua require'treesitter_indent_object.textobj'.select_indent_inner(true, 'V')<CR>
 ```
 
-Lua equivalent:  
+Lua equivalent:
 
 ```lua
 -- select context-aware indent
-vim.keymap.set({"x", "o"}, "ai", "<Cmd>lua require'treesitter_indent_object.textobj'.select_indent_outer()<CR>")
+vim.keymap.set({"x", "o"}, "ai", function() require'treesitter_indent_object.textobj'.select_indent_outer() end)
 -- ensure selecting entire line (or just use Vai)
-vim.keymap.set({"x", "o"}, "aI", "<Cmd>lua require'treesitter_indent_object.textobj'.select_indent_outer(true)<CR>")
+vim.keymap.set({"x", "o"}, "aI", function() require'treesitter_indent_object.textobj'.select_indent_outer(true) end)
 -- select inner block (only if block, only else block, etc.)
-vim.keymap.set({"x", "o"}, "ii", "<Cmd>lua require'treesitter_indent_object.textobj'.select_indent_inner()<CR>")
--- select entire inner range (including if, else, etc.)
-vim.keymap.set({"x", "o"}, "iI", "<Cmd>lua require'treesitter_indent_object.textobj'.select_indent_inner(true)<CR>")
+vim.keymap.set({"x", "o"}, "ii", function() require'treesitter_indent_object.textobj'.select_indent_inner() end)
+-- select entire inner range (including if, else, etc.) in line-wise visual mode
+vim.keymap.set({"x", "o"}, "iI", function() require'treesitter_indent_object.textobj'.select_indent_inner(true, 'V') end)
 ```
 
   </details>
