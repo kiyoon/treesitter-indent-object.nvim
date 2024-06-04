@@ -9,6 +9,8 @@ Context-aware smart indent object to select block, powered by [treesitter](https
 This plugin is intended to be used with [indent-blankline.nvim](https://github.com/lukas-reineke/indent-blankline.nvim),
 so you see the scope before you select.
 
+NOTE: This plugin is only compatible with indent-blankline.nvim v2 because its definition of scope has been changed on v3. My personal preference is to keep using v2 as its scope aligns well with VSCode.
+
 ## Install
 
 Use your favourite plugin manager to install.
@@ -45,6 +47,19 @@ This includes lazy-loading on keymaps. If you install like this, you can ignore 
         desc = "Select context-aware indent (inner, entire range) in line-wise visual mode",
       },
     },
+  },
+  {
+    "lukas-reineke/indent-blankline.nvim",
+    tag = "v2.20.8",  -- Use v2
+    event = "BufReadPost",
+    config = function()
+      vim.opt.list = true
+      require("indent_blankline").setup {
+        space_char_blankline = " ",
+        show_current_context = true,
+        show_current_context_start = true,
+      }
+    end,
   },
 ```
 
