@@ -9,7 +9,15 @@ Context-aware smart indent object to select block, powered by [treesitter](https
 This plugin is intended to be used with [indent-blankline.nvim](https://github.com/lukas-reineke/indent-blankline.nvim),
 so you see the scope before you select.
 
-NOTE: This plugin is only compatible with indent-blankline.nvim v2 because its definition of scope has been changed on v3. My personal preference is to keep using v2 as its scope aligns well with VSCode.
+> [!NOTE]
+> **This plugin is only compatible with `indent-blankline.nvim` v2** because its definition of scope has been changed on v3.
+> TL;DR - v2 scope is just "same indent level" while v3 uses an actual [semantic scope][scope] specific to each language.
+> My personal preference is to keep using v2 as its scope aligns well with VSCode.
+> The author does seem to plan on bringing back the old scope on v3 ([lukas-reineke/indent-blankline.nvim#649][issue]).
+
+[scope]: https://en.wikipedia.org/wiki/Scope_(computer_science)
+[issue]: https://github.com/lukas-reineke/indent-blankline.nvim/issues/649
+
 
 ## Install
 
@@ -140,4 +148,26 @@ vim.keymap.set({"x", "o"}, "ii", function() require'treesitter_indent_object.tex
 vim.keymap.set({"x", "o"}, "iI", function() require'treesitter_indent_object.textobj'.select_indent_inner(true, 'V') end)
 ```
 
-  </details>
+</details>
+
+## Tips and Tricks
+
+#### Include Surrounding Whitespace
+
+There is a helper function that expands current selection to the surrounding empty lines.
+Call it right after the textobject and it'll try to match the behavior of the builtin `ap` (a paragraph) keymap.
+See [#4](https://github.com/kiyoon/treesitter-indent-object.nvim/pull/4) for more details about its behavior.
+
+> [!NOTE]
+> This function is designed to work with line-wise selections (`'V'`) only!
+
+```lua
+{
+  "aI",
+  function()
+    require'treesitter_indent_object.textobj'.select_indent_outer(true, 'V')
+    require'treesitter_indent_object.refiner'.include_surrounding_empty_lines()
+  end,
+  mode = { "x", "o" },
+},
+```

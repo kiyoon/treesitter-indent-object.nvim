@@ -82,7 +82,6 @@ M.find_indent = function(line_num)
   return indent + math.floor(spaces / shiftwidth)
 end
 
-
 -- Modified from indent_blankline.utils
 -- to return column as well
 M.get_current_context = function(type_patterns, use_treesitter_scope)
