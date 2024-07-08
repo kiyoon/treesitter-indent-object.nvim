@@ -154,8 +154,9 @@ vim.keymap.set({"x", "o"}, "iI", function() require'treesitter_indent_object.tex
 
 #### Include Surrounding Whitespace
 
-There is an utility function that expands current selection to the surrounding empty lines.
+There is a helper function that expands current selection to the surrounding empty lines.
 Call it right after the textobject and it'll try to match the behavior of the builtin `ap` (a paragraph) keymap.
+See [#4](https://github.com/kiyoon/treesitter-indent-object.nvim/pull/4) for more details about its behavior.
 
 > [!NOTE]
 > This function is designed to work with line-wise selections (`'V'`) only!
@@ -165,7 +166,7 @@ Call it right after the textobject and it'll try to match the behavior of the bu
   "aI",
   function()
     require'treesitter_indent_object.textobj'.select_indent_outer(true, 'V')
-    require'treesitter_indent_object.utils'.include_surrounding_empty_lines()
+    require'treesitter_indent_object.refiner'.include_surrounding_empty_lines()
   end,
   mode = { "x", "o" },
 },
