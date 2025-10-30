@@ -1,17 +1,7 @@
 local utils = require("treesitter_indent_object.utils")
-
-local ts_query_status, ts_query = pcall(require, "nvim-treesitter.query")
-if not ts_query_status then
-  vim.schedule_wrap(function()
-    utils.error_handler("nvim-treesitter not found. Treesitter indent will not work", vim.log.levels.WARN)
-  end)()
-end
-
-local ts_utils_status, ts_utils = pcall(require, "nvim-treesitter.ts_utils")
-local ts_indent_status, ts_indent = pcall(require, "nvim-treesitter.indent")
+local ts_utils = require("treesitter_indent_object.ts_utils")
 
 local M = {}
-
 
 local enter_visual_mode = function(force_mode)
   -- enter visual mode if normal or operator-pending (no) mode
@@ -21,32 +11,32 @@ local enter_visual_mode = function(force_mode)
   local mode = vim.api.nvim_get_mode()
 
   -- If set to 'V', try to force line-wise visual mode
-  if force_mode == 'V' then
-    if mode.mode == 'no' or mode.mode == 'n' or mode.mode == 'v' then
+  if force_mode == "V" then
+    if mode.mode == "no" or mode.mode == "n" or mode.mode == "v" then
       vim.cmd("normal! V")
     end
   -- If set to 'v', try to force char-wise visual mode
-  elseif force_mode == 'v' then
-    if mode.mode == 'no' or mode.mode == 'n' or mode.mode == 'V' then
+  elseif force_mode == "v" then
+    if mode.mode == "no" or mode.mode == "n" or mode.mode == "V" then
       vim.cmd("normal! v")
     end
   -- If not specified, respect the current visual mode
   else
-    if mode.mode == 'no' or mode.mode == 'n' then
+    if mode.mode == "no" or mode.mode == "n" then
       vim.cmd("normal! v")
     end
   end
 end
 
 -- Assume it is already visual mode
-local update_selection = function (node, entire_line)
-  local start_row, start_col, end_row, end_col = ts_utils.get_vim_range( {node:range()} )
-  vim.api.nvim_win_set_cursor(0, {start_row, start_col-1})
+local update_selection = function(node, entire_line)
+  local start_row, start_col, end_row, end_col = ts_utils.get_vim_range({ node:range() })
+  vim.api.nvim_win_set_cursor(0, { start_row, start_col - 1 })
   if entire_line then
     vim.cmd("normal! ^")
   end
   vim.cmd("normal! o")
-  vim.api.nvim_win_set_cursor(0, {end_row, end_col-1})
+  vim.api.nvim_win_set_cursor(0, { end_row, end_col - 1 })
   if entire_line then
     vim.cmd("normal! g_")
   end
@@ -55,9 +45,13 @@ end
 M.select_indent_outer = function(entire_line, force_mode)
   entire_line = entire_line or false
   -- We have to remember that end_col is end-exclusive
-  local context_status, context_node, context_pattern =
-    utils.get_current_context(vim.g.treesitter_indent_object_context_patterns, vim.g.treesitter_indent_object_use_treesitter_scope)
-  if not context_status then return false end
+  local context_status, context_node, context_pattern = utils.get_current_context(
+    vim.g.treesitter_indent_object_context_patterns,
+    vim.g.treesitter_indent_object_use_treesitter_scope
+  )
+  if not context_status then
+    return false
+  end
 
   enter_visual_mode(force_mode)
   update_selection(context_node, entire_line)
@@ -65,20 +59,24 @@ end
 
 M.select_indent_inner = function(select_all, force_mode)
   select_all = select_all or false
-  local use_ts_indent = ts_query_status and ts_indent_status and ts_query.has_indents(vim.bo.filetype)
+  local use_ts_indent = ts_utils.has_indents(vim.bo.filetype)
   local indent_fn = nil
   if use_ts_indent then
-    indent_fn = ts_indent.get_indent
+    indent_fn = ts_utils.get_indent
   else
     indent_fn = utils.find_indent
   end
 
   -- We have to remember that end_col is end-exclusive
-  local context_status, context_node, context_pattern =
-    utils.get_current_context(vim.g.treesitter_indent_object_context_patterns, vim.g.treesitter_indent_object_use_treesitter_scope)
-  if not context_status then return false end
+  local context_status, context_node, context_pattern = utils.get_current_context(
+    vim.g.treesitter_indent_object_context_patterns,
+    vim.g.treesitter_indent_object_use_treesitter_scope
+  )
+  if not context_status then
+    return false
+  end
 
-  local start_row, _, end_row, _ = ts_utils.get_vim_range( {context_node:range()} )
+  local start_row, _, end_row, _ = ts_utils.get_vim_range({ context_node:range() })
   local start_indent = indent_fn(start_row)
 
   local indented_row_start = nil
@@ -110,7 +108,7 @@ M.select_indent_inner = function(select_all, force_mode)
       -- this should not happen
       return false
     end
-  else  -- select one block
+  else -- select one block
     local cursor_pos = vim.api.nvim_win_get_cursor(0)
     local cursor_row = cursor_pos[1]
 
@@ -144,7 +142,7 @@ M.select_indent_inner = function(select_all, force_mode)
         for i = indented_row_end, start_row, -1 do
           local indent = indent_fn(i)
           if indent == start_indent then
-            indented_row_start = i+1
+            indented_row_start = i + 1
             break
           end
         end
@@ -156,7 +154,7 @@ M.select_indent_inner = function(select_all, force_mode)
         for i = indented_row_start, end_row do
           local indent = indent_fn(i)
           if indent == start_indent then
-            indented_row_end = i-1
+            indented_row_end = i - 1
             break
           end
         end
@@ -168,7 +166,7 @@ M.select_indent_inner = function(select_all, force_mode)
         -- search upwards for the first non-indented line
         local indent = indent_fn(i)
         if indent == start_indent then
-          indented_row_start = i+1
+          indented_row_start = i + 1
           break
         end
       end
@@ -179,7 +177,7 @@ M.select_indent_inner = function(select_all, force_mode)
         -- search downwards for the first non-indented line
         local indent = indent_fn(i)
         if indent == start_indent then
-          indented_row_end = i-1
+          indented_row_end = i - 1
           break
         end
       end
@@ -206,9 +204,9 @@ M.select_indent_inner = function(select_all, force_mode)
   end
 
   enter_visual_mode(force_mode)
-  vim.api.nvim_win_set_cursor(0, {indented_row_start, 0})
+  vim.api.nvim_win_set_cursor(0, { indented_row_start, 0 })
   vim.cmd("normal! ^o")
-  vim.api.nvim_win_set_cursor(0, {indented_row_end, 0})
+  vim.api.nvim_win_set_cursor(0, { indented_row_end, 0 })
   vim.cmd("normal! g_")
 
   return true
