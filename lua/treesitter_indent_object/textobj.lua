@@ -1,5 +1,6 @@
 local utils = require("treesitter_indent_object.utils")
 local ts_utils = require("treesitter_indent_object.ts_utils")
+local ts_indent = require("treesitter_indent_object.ts_indent")
 
 local M = {}
 
@@ -59,10 +60,12 @@ end
 
 M.select_indent_inner = function(select_all, force_mode)
   select_all = select_all or false
-  local use_ts_indent = ts_utils.has_indents(vim.bo.filetype)
+  local use_ts_indent = ts_indent.has_indents(vim.bo.filetype)
   local indent_fn = nil
   if use_ts_indent then
-    indent_fn = ts_utils.get_indent
+    print("Using treesitter indent function")
+    -- indent_fn = ts_indent.get_indent
+    indent_fn = utils.find_indent
   else
     indent_fn = utils.find_indent
   end
@@ -77,7 +80,10 @@ M.select_indent_inner = function(select_all, force_mode)
   end
 
   local start_row, _, end_row, _ = ts_utils.get_vim_range({ context_node:range() })
+  print("Context node range:", context_node:range())
+  print("Context rows:", start_row, end_row)
   local start_indent = indent_fn(start_row)
+  print("Context start indent:", start_indent)
 
   local indented_row_start = nil
   local indented_row_end = nil
@@ -86,6 +92,7 @@ M.select_indent_inner = function(select_all, force_mode)
     -- but include the one in the middle (e.g. else)
     for i = start_row, end_row do
       local indent = indent_fn(i)
+      print("Checking row:", i, "indent:", indent)
       if indent > start_indent then
         indented_row_start = i
         break
@@ -98,6 +105,7 @@ M.select_indent_inner = function(select_all, force_mode)
 
     for i = end_row, start_row, -1 do
       local indent = indent_fn(i)
+      print("Checking row:", i, "indent:", indent)
       if indent > start_indent then
         indented_row_end = i
         break
@@ -116,6 +124,7 @@ M.select_indent_inner = function(select_all, force_mode)
       for i = cursor_row, end_row do
         -- search downwards for the first indented line
         local indent = indent_fn(i)
+        print("Checking row:", i, "indent:", indent)
         if indent > start_indent then
           indented_row_start = i
           break
@@ -127,6 +136,7 @@ M.select_indent_inner = function(select_all, force_mode)
         -- search upwards for end and then further up for start
         for i = cursor_row, start_row, -1 do
           local indent = indent_fn(i)
+          print("Checking row:", i, "indent:", indent)
           if indent > start_indent then
             indented_row_end = i
             break
@@ -141,6 +151,7 @@ M.select_indent_inner = function(select_all, force_mode)
         indented_row_start = start_row
         for i = indented_row_end, start_row, -1 do
           local indent = indent_fn(i)
+          print("Checking row:", i, "indent:", indent)
           if indent == start_indent then
             indented_row_start = i + 1
             break
@@ -153,6 +164,7 @@ M.select_indent_inner = function(select_all, force_mode)
         indented_row_end = end_row
         for i = indented_row_start, end_row do
           local indent = indent_fn(i)
+          print("Checking row:", i, "indent:", indent)
           if indent == start_indent then
             indented_row_end = i - 1
             break
@@ -165,6 +177,7 @@ M.select_indent_inner = function(select_all, force_mode)
       for i = cursor_row, start_row, -1 do
         -- search upwards for the first non-indented line
         local indent = indent_fn(i)
+        print("Checking row:", i, "indent:", indent)
         if indent == start_indent then
           indented_row_start = i + 1
           break
@@ -176,6 +189,7 @@ M.select_indent_inner = function(select_all, force_mode)
       for i = cursor_row, end_row do
         -- search downwards for the first non-indented line
         local indent = indent_fn(i)
+        print("Checking row:", i, "indent:", indent)
         if indent == start_indent then
           indented_row_end = i - 1
           break
