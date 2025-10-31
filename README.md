@@ -23,6 +23,8 @@ so you see the scope before you select.
 
 ## Install
 
+- **Requires Neovim 0.10+** (for native treesitter API, without nvim-treesitter)
+
 Use your favourite plugin manager to install.
 
 #### Example with lazy.nvim
@@ -62,8 +64,7 @@ This includes lazy-loading on keymaps. If you install like this, you can ignore 
     },
   },
   {
-    "lukas-reineke/indent-blankline.nvim",
-    tag = "v2.20.8",  -- Use v2
+    "kiyoon/indent-blankline-v2.nvim",
     event = "BufReadPost",
     config = function()
       vim.opt.list = true
