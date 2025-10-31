@@ -6,7 +6,7 @@ Context-aware smart indent object to select block, powered by [treesitter](https
 
 <img src="https://user-images.githubusercontent.com/12980409/206920869-0a9075e2-7688-4c54-a442-331239a61de2.gif" width="100%"/>
 
-This plugin is intended to be used with [indent-blankline.nvim](https://github.com/lukas-reineke/indent-blankline.nvim),
+This plugin is intended to be used with [indent-blankline-v2.nvim](https://github.com/kiyoon/indent-blankline-v2.nvim),
 so you see the scope before you select.
 
 > [!NOTE]
@@ -14,6 +14,8 @@ so you see the scope before you select.
 > TL;DR - v2 scope is just "same indent level" while v3 uses an actual [semantic scope][scope] specific to each language.
 > My personal preference is to keep using v2 as its scope aligns well with VSCode.
 > The author does seem to plan on bringing back the old scope on v3 ([lukas-reineke/indent-blankline.nvim#649][issue]).
+>
+> - Use the fork [kiyoon/indent-blankline-v2.nvim](https://github.com/kiyoon/indent-blankline-v2.nvim) for v2 maintenance, like using `main` branch of `nvim-treesitter` is supported.
 
 [scope]: https://en.wikipedia.org/wiki/Scope_(computer_science)
 [issue]: https://github.com/lukas-reineke/indent-blankline.nvim/issues/649
@@ -33,25 +35,28 @@ This includes lazy-loading on keymaps. If you install like this, you can ignore 
       {
         "ai",
         function() require'treesitter_indent_object.textobj'.select_indent_outer() end,
-        mode = {"x", "o"},
+        mode = { "x", "o" },
         desc = "Select context-aware indent (outer)",
       },
       {
         "aI",
-        function() require'treesitter_indent_object.textobj'.select_indent_outer(true) end,
-        mode = {"x", "o"},
+        function()
+          require'treesitter_indent_object.textobj'.select_indent_outer(true, 'V')
+          require'treesitter_indent_object.refiner'.include_surrounding_empty_lines()
+        end,
+        mode = { "x", "o" },
         desc = "Select context-aware indent (outer, line-wise)",
       },
       {
         "ii",
         function() require'treesitter_indent_object.textobj'.select_indent_inner() end,
-        mode = {"x", "o"},
+        mode = { "x", "o" },
         desc = "Select context-aware indent (inner, partial range)",
       },
       {
         "iI",
         function() require'treesitter_indent_object.textobj'.select_indent_inner(true, 'V') end,
-        mode = {"x", "o"},
+        mode = { "x", "o" },
         desc = "Select context-aware indent (inner, entire range) in line-wise visual mode",
       },
     },
