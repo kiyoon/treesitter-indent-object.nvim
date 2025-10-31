@@ -12,6 +12,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           args: --check .
+          version: latest
 
   block-fixup:
     runs-on: ubuntu-latest
